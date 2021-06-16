@@ -75,41 +75,6 @@ export default {
   },
   components: {},
   methods: {
-    /* login() {
-      this.$axios
-        .post("/login", {
-          username: this.username,
-          password: this.password,
-        })
-        .then((res) => {
-          if (res.meta.status === 200) {
-            // res.data.password = this.password;
-            // let userInfo = JSON.stringify(res.data);
-            let token = JSON.stringify(res.data.token);
-            sessionStorage.setItem("token", token);
-            this.$router.push("/users");
-            console.log(token);
-            this.$notify({
-              title: "成功",
-              message: res.meta.msg,
-              duration: 1500,
-              type: "success",
-            });
-          } else {
-            this.$notify.error({
-              title: "错误",
-              message: res.meta.msg,
-              duration: 1500,
-            });
-          }
-        });
-    },
-    reset() {
-      console.log(11);
-      this.username = "";
-      this.password = "";
-    }, */
-
     login() {
       // validate() 是表单进行校验的方法
       // valid 如果为真则校验通过，否则不通过

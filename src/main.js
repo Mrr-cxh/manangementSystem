@@ -10,13 +10,12 @@ import "./plugins/element.js";
 // 配置默认的根路径
 axios.defaults.baseURL = "http://127.0.0.1:8888/api/private/v1/";
 
-// axios 请求拦截器
+// axios 请求拦截器(预处理这次请求)
 axios.interceptors.request.use((config) => {
   // config 是请求的配置
-  // 在发送请求之前做些什么
-  // 设置请求头Authorization
+  // 为请求头对象，添加 token 验证的 Authorization 字段
   config.headers.Authorization = window.sessionStorage.getItem("token");
-  // 比如 return config
+  // 最后必须 return config
   return config;
 });
 

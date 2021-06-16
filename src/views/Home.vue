@@ -1,112 +1,61 @@
 <template>
-  <div class="home">
-    <el-row class="header" type="flex" justify="space-between">
-      <el-col :span="24">
-        <!-- <div class="grid-content bg-purple-dark"></div> -->
-        <el-col :span="8"><img src="../assets/logo.png" alt=""/></el-col>
-        <el-col :span="8"> <h1>商城后台管理系统</h1></el-col>
-        <el-col :span="8">
-          <el-button type="danger" @click="quit">退出登录</el-button>
-        </el-col>
-      </el-col>
-    </el-row>
-    <div class="layout">
-      <div class="menu">
-        <el-radio-group v-model="isCollapse">
-          <el-radio-button :label="false" v-show="isCollapse"
-            >展开</el-radio-button
-          >
-          <el-radio-button :label="true" v-show="!isCollapse"
-            >收起</el-radio-button
-          >
-        </el-radio-group>
+  <!-- elementUI中的布局容器 container -->
+  <el-container class="home">
+    <!-- 头部 -->
+    <el-header>
+      <img src="../assets/logo.png" alt="" />
+      <h1>电商后台管理系统</h1>
+      <el-button type="danger" @click="quit">退出登录</el-button>
+    </el-header>
+
+    <!-- 页面主体 -->
+    <el-container>
+      <!-- 导航菜单 -->
+      <el-aside width="200px">
+        <!-- 菜单栏 -->
         <el-menu
-          default-active="1-4-1"
-          class="el-menu-vertical-demo"
-          :collapse="isCollapse"
+          background-color="#545c64"
+          text-color="#fff"
+          active-text-color="#ffd04b"
+          unique-opened
         >
-          <el-submenu index="1">
+          <!-- 一级菜单 -->
+          <!-- index 如果相同的话，菜单会出现一起合上一起展开的效果 -->
+          <!-- 且 index 的值要是字符串类型的 -->
+          <el-submenu
+            :index="item.id + ''"
+            v-for="item in menus"
+            :key="item.id"
+          >
+            <!-- 一级菜单的模板区域 -->
             <template slot="title">
-              &nbsp;<i class="iconfont icon-wode1"></i>&nbsp;&nbsp;
-              <span slot="title">用户管理</span>
+              <!-- 图表 -->
+              <i :class="iconsObj[item.id]"></i>
+              <!-- 文字 -->
+              <span>{{ item.authName }}</span>
             </template>
-            <!-- <el-menu-item-group> -->
-            <el-menu-item index="1-1" class="iconfont icon-menu-s">
-              用户列表
+
+            <!-- 二级菜单 -->
+            <el-menu-item
+              :index="childItem.id + ''"
+              v-for="childItem in item.children"
+              :key="childItem.id"
+            >
+              <template slot="title">
+                <!-- 图表 -->
+                <i class="el-icon-menu"></i>
+                <!-- 文字 -->
+                <span>{{ childItem.authName }}</span>
+              </template>
             </el-menu-item>
-            <!-- </el-menu-item-group> -->
           </el-submenu>
-          <el-submenu index="2">
-            <template slot="title">
-              &nbsp;<i class="iconfont icon-quanxian"></i>&nbsp;&nbsp;
-              <span slot="title">权限管理</span>
-            </template>
-            <!-- <el-menu-item-group> -->
-            <el-menu-item index="1-1" class="iconfont icon-menu-s">
-              角色列表
-            </el-menu-item>
-            <!-- </el-menu-item-group> -->
-            <!-- <el-menu-item-group> -->
-            <el-menu-item index="1-2" class="iconfont icon-menu-s">
-              权限列表
-            </el-menu-item>
-            <!-- </el-menu-item-group> -->
-          </el-submenu>
-          <el-submenu index="3">
-            <template slot="title">
-              &nbsp;<i class="iconfont icon-goods-copy"></i>&nbsp;&nbsp;
-              <span slot="title">商品管理</span>
-            </template>
-            <el-menu-item-group>
-              <!-- <el-menu-item-group> -->
-              <el-menu-item index="1-1" class="iconfont icon-menu-s">
-                商品列表
-              </el-menu-item>
-              <!-- </el-menu-item-group> -->
-              <!-- <el-menu-item-group> -->
-              <el-menu-item index="1-2" class="iconfont icon-menu-s">
-                分类参数
-              </el-menu-item>
-              <!-- </el-menu-item-group> -->
-              <!-- <el-menu-item-group> -->
-              <el-menu-item index="1-2" class="iconfont icon-menu-s">
-                商品分类
-              </el-menu-item>
-              <!-- </el-menu-item-group> -->
-            </el-menu-item-group>
-          </el-submenu>
-          <el-submenu index="4">
-            <template slot="title">
-              &nbsp;<i class="iconfont icon-dingdan"></i>&nbsp;&nbsp;
-              <span slot="title">订单管理</span>
-            </template>
-            <!-- <el-menu-item-group> -->
-            <el-menu-item index="1-1" class="iconfont icon-menu-s">
-              订单列表
-            </el-menu-item>
-            <!-- </el-menu-item-group> -->
-          </el-submenu>
-          <el-submenu index="5">
-            <template slot="title">
-              &nbsp;<i class="iconfont icon-tongji"></i>&nbsp;&nbsp;
-              <span slot="title">数据统计</span>
-            </template>
-            <!-- <el-menu-item-group> -->
-            <el-menu-item index="1-1" class="iconfont icon-menu-s">
-              数据报表
-            </el-menu-item>
-            <!-- </el-menu-item-group> -->
-          </el-submenu>
-          <!-- <el-menu-item index="6">
-        <i class="el-icon-setting"></i>
-        <span slot="title">导航四</span>
-      </el-menu-item> -->
         </el-menu>
-      </div>
-      <!-- @open="handleOpen" @close="handleClose" -->
-      <router-view class="right" />
-    </div>
-  </div>
+      </el-aside>
+
+      <!-- 表格 -->
+      <el-main>Main</el-main>
+    </el-container>
+  </el-container>
 </template>
 
 <script>
@@ -114,8 +63,25 @@ export default {
   name: "Home",
   data() {
     return {
-      isCollapse: false,
+      // 左侧菜单数据
+      menus: [],
+      // 解决 v-for 导致的一级菜单的 icon 都一样的问题
+      iconsObj: {
+        "125": "iconfont icon-wode1",
+        "103": "iconfont icon-quanxian",
+        "101": "iconfont icon-goods-copy",
+        "102": "iconfont icon-dingdan",
+        "145": "iconfont icon-tongji",
+      },
     };
+  },
+  async created() {
+    const res = await this.$axios.get("/menus");
+    if (res.meta.status === 200) {
+      this.menus = res.data;
+    } else {
+      this.$message.error(res.meta.msg);
+    }
   },
   methods: {
     quit() {
@@ -128,53 +94,36 @@ export default {
 
 <style lang="less">
 .home {
-  .el-col {
-    height: 100px;
-    :last-of-type {
-      text-align: right;
-    }
-    h1 {
-      text-align: center;
-    }
-  }
-  .el-button {
-    margin-top: 26px;
-    margin-right: 50px;
-  }
-  .header {
-    height: 100px;
-    background-color: white;
-    img {
-      display: block;
-      margin: 0 auto;
-    }
-  }
-  .layout {
+  height: 100%;
+  .el-header {
+    // background-color: #3e6485;
     display: flex;
-    /* .right {
-      // width: 86%;
-    } */
-  }
-  .menu {
-    // width: 14%;
-    .el-menu--collapse {
-      width: 69px;
+    justify-content: space-between;
+    align-items: center;
+    display: flex;
+    align-items: center;
+    h1 {
+      letter-spacing: 10px;
+      // margin-left: -80px;
     }
-    .el-radio-button:first-child .el-radio-button__inner {
-      border-radius: 0px;
-    }
-    .el-radio-button {
-      width: 100px;
+    img {
+      margin-left: 50px;
+      width: 60px;
+      height: 60px;
     }
   }
-  .el-menu-vertical-demo:not(.el-menu--collapse) {
-    width: 199px;
-    min-height: 582px;
-    // min-height: 182%;
+  .el-aside {
+    background-color: #545c64;
+    .iconfont {
+      margin-right: 10px;
+    }
+    .el-menu {
+      border-right: none;
+      // 解决导航右边1px的线
+    }
+  }
+  .el-main {
+    background-color: #eaedf1;
   }
 }
-/* .home .layout .el-radio-button,
-.home .layout .el-radio-button .is-active {
-  width: 200px;
-} */
 </style>
