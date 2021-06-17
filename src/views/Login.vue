@@ -3,31 +3,22 @@
     <div class="login-box">
       <!-- 头像 -->
       <div class="user-img">
-        <img src="../assets/logo.png" alt="" />
+        <img src="../assets/logo.png" alt />
       </div>
 
       <!-- 登录表单 -->
-      <el-form
-        class="login-form"
-        :model="user"
-        :rules="loginRules"
-        ref="loginRef"
-      >
+      <!-- :model 是绑定对象 -->
+      <!-- :rules 是检验规则 -->
+      <el-form class="login-form" :model="user" :rules="loginRules" ref="loginRef">
         <!-- 用户名 -->
+        <!-- prop 是检验规则 -->
         <el-form-item prop="username">
-          <el-input
-            prefix-icon="iconfont icon-wode"
-            v-model="user.username"
-          ></el-input>
+          <el-input prefix-icon="iconfont icon-wode" v-model="user.username"></el-input>
         </el-form-item>
 
         <!-- 密码 -->
         <el-form-item prop="password">
-          <el-input
-            type="password"
-            prefix-icon="iconfont icon-mima"
-            v-model="user.password"
-          ></el-input>
+          <el-input type="password" prefix-icon="iconfont icon-mima" v-model="user.password"></el-input>
         </el-form-item>
 
         <!-- 登录重置按钮 -->
@@ -49,16 +40,14 @@ export default {
       // 在 form 表单上用 :model 绑定
       user: {
         username: "admin",
-        password: "123456",
+        password: "123456"
       },
-      // form 表单上用 :rules 绑定校验规则
-      // form-item 使用 prop 接收校验规则
       // loginRules 是表单的验证规则
       loginRules: {
         // 用户名验证
         username: [
           { required: true, message: "请输入用户名", trigger: "blur" },
-          { min: 3, max: 8, message: "长度在 3 到 8 个字符", trigger: "blur" },
+          { min: 3, max: 8, message: "长度在 3 到 8 个字符", trigger: "blur" }
         ],
         // 密码验证
         password: [
@@ -67,25 +56,25 @@ export default {
             min: 6,
             max: 15,
             message: "长度在 6 到 15 个字符",
-            trigger: "blur",
-          },
-        ],
-      },
+            trigger: "blur"
+          }
+        ]
+      }
     };
   },
   components: {},
   methods: {
     login() {
-      // validate() 是表单进行校验的方法
+      // validate() 是表单进行预校验的方法
       // valid 如果为真则校验通过，否则不通过
-      this.$refs.loginRef.validate((valid) => {
+      this.$refs.loginRef.validate(valid => {
         if (!valid) return;
         this.$axios
           .post("/login", {
             username: this.user.username,
-            password: this.user.password,
+            password: this.user.password
           })
-          .then((res) => {
+          .then(res => {
             if (res.meta.status === 200) {
               this.$message.success(res.meta.msg);
               window.sessionStorage.setItem("token", res.data.token);
@@ -100,8 +89,8 @@ export default {
     reset() {
       this.$refs.loginRef.resetFields();
       // resetFields() 是 elementUI 中表单自带的重置方法
-    },
-  },
+    }
+  }
 };
 </script>
 <style lang="less" scoped>
