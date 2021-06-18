@@ -18,12 +18,15 @@
           </el-input>
         </el-col>
         <el-col :span="4">
-          <el-button type="primary" @click="addDialogVisible = true">添加用户</el-button>
+          <el-button type="primary" @click="addUserDialogVisible = true">添加用户</el-button>
         </el-col>
       </el-row>
 
       <!-- 用户列表 -->
+      <!-- stripe斑马纹 border带有纵向边框 -->
+      <!-- :data 绑定数据源 -->
       <el-table :data="userList" border stripe>
+        <!-- 序号列 -->
         <el-table-column type="index" label="#"></el-table-column>
         <el-table-column label="姓名" prop="username"></el-table-column>
         <el-table-column label="邮箱" prop="email"></el-table-column>
@@ -42,18 +45,23 @@
             <el-switch v-model="scope.row.mg_state" @change="changeState(scope.row)"></el-switch>
           </template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="操作" width="200px">
           <template slot-scope="scope">
-            <!-- 更新 -->
+            <!-- 更新按钮 -->
             <el-button
               type="primary"
               size="mini"
               icon="el-icon-edit"
               @click="showEditDialog(scope.row.id)"
             ></el-button>
-            <!-- 删除 -->
-            <el-button type="danger" size="mini" icon="el-icon-delete"></el-button>
-            <!-- 分配角色 -->
+            <!-- 删除按钮 -->
+            <el-button
+              type="danger"
+              size="mini"
+              icon="el-icon-delete"
+              @click="deleteUserById(scope.row.id)"
+            ></el-button>
+            <!-- 分配角色按钮 -->
             <el-tooltip effect="dark" content="分配角色" placement="top" :enterable="false">
               <el-button type="warning" size="mini" icon="el-icon-setting"></el-button>
             </el-tooltip>
@@ -62,6 +70,8 @@
       </el-table>
 
       <!-- 分页 -->
+      <!-- size-change：每页显示条目个数改变时会触发 -->
+      <!-- current-change：当前页数改变时会触发 -->
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
@@ -73,7 +83,12 @@
       ></el-pagination>
 
       <!-- 添加用户对话框 -->
-      <el-dialog title="添加用户" :visible.sync="addDialogVisible" width="50%" @close="closeAddDialog">
+      <el-dialog
+        title="添加用户"
+        :visible.sync="addUserDialogVisible"
+        width="50%"
+        @close="closeAddDialog"
+      >
         <!-- 主体区域 -->
         <el-form :model="addUser" :rules="addUserRules" ref="addUserRef" label-width="70px">
           <el-form-item label="用户名" prop="username">
@@ -91,7 +106,7 @@
         </el-form>
         <!-- 底部区域 -->
         <span slot="footer" class="dialog-footer">
-          <el-button @click="addDialogVisible = false">取 消</el-button>
+          <el-button @click="addUserDialogVisible = false">取 消</el-button>
           <el-button type="primary" @click="addUserEvent">确 定</el-button>
         </span>
       </el-dialog>
@@ -99,9 +114,9 @@
       <!-- 更新用户对话框 -->
       <el-dialog
         title="更新用户"
-        :visible.sync="editDialogVisible"
+        :visible.sync="editUserDialogVisible"
         width="50%"
-        @close="closeEditDialog"
+        @close="closeUserEditDialog"
       >
         <!-- 主体区域 -->
         <el-form :model="editForm" :rules="editFormRules" ref="editFormRef" label-width="70px">
@@ -117,7 +132,7 @@
         </el-form>
         <!-- 底部区域 -->
         <span slot="footer" class="dialog-footer">
-          <el-button @click="editDialogVisible = false">取 消</el-button>
+          <el-button @click="editUserDialogVisible = false">取 消</el-button>
           <el-button type="primary" @click="editUserEvent">确 定</el-button>
         </span>
       </el-dialog>
@@ -161,14 +176,14 @@ export default {
         // 当前页码
         pagenum: 1,
         // 每页显示条数
-        pagesize: 2
+        pagesize: 5
       },
       // 用户数据列表
       userList: [],
       // 用户总人数
       total: 0,
       // 控制添加用户对话框的显示与隐藏
-      addDialogVisible: false,
+      addUserDialogVisible: false,
       // 添加用户的表单数据
       addUser: { username: "", password: "", email: "", mobile: "" },
       // 添加用户的表单验证
@@ -179,12 +194,7 @@ export default {
         ],
         password: [
           { required: true, message: "请输入密码", trigger: "blur" },
-          {
-            min: 6,
-            max: 15,
-            message: "长度在 6 到 15 个字符",
-            trigger: "blur"
-          }
+          { min: 6, max: 15, message: "长度在 6 到 15 个字符", trigger: "blur" }
         ],
         email: [
           { required: true, message: "请输入邮箱", trigger: "blur" },
@@ -197,7 +207,7 @@ export default {
         ]
       },
       // 控制更新用户对话框的显示与隐藏
-      editDialogVisible: false,
+      editUserDialogVisible: false,
       // 查询到的用户信息对象
       editForm: {},
       // 更新用户的表单验证
@@ -271,7 +281,7 @@ export default {
         if (res.meta.status === 201) {
           this.$message.success(res.meta.msg);
           // 隐藏对话框
-          this.addDialogVisible = false;
+          this.addUserDialogVisible = false;
           // 刷新列表
           this.getUserInfo();
         } else {
@@ -279,9 +289,9 @@ export default {
         }
       });
     },
-    // 展示编辑用户的对话框
+    // 根据id展示编辑用户的对话框
     async showEditDialog(id) {
-      this.editDialogVisible = true;
+      this.editUserDialogVisible = true;
       const res = await this.$axios.get(`/users/${id}`);
       if (res.meta.status === 200) {
         this.editForm = res.data;
@@ -290,10 +300,10 @@ export default {
       }
     },
     // 更新对话框的关闭重置事件
-    closeEditDialog() {
+    closeUserEditDialog() {
       this.$refs.editFormRef.resetFields();
     },
-    // 更新用户
+    // 根据id更新用户
     editUserEvent() {
       this.$refs.editFormRef.validate(async valid => {
         if (!valid) return;
@@ -306,17 +316,36 @@ export default {
         if (res.meta.status === 200) {
           this.$message.success(res.meta.msg);
           // 隐藏对话框
-          this.editDialogVisible = false;
+          this.editUserDialogVisible = false;
           // 刷新列表
           this.getUserInfo();
         } else {
           this.$message.error(res.meta.msg);
         }
       });
+    },
+    // 根据id删除用户
+    deleteUserById(id) {
+      this.$confirm("此操作将永久删除该用户, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(async () => {
+          const res = await this.$axios.delete(`/users/${id}`);
+          if (res.meta.status === 200) {
+            this.getUserInfo();
+            this.$message.success(res.meta.msg);
+          } else {
+            this.$message.error(res.meta.msg);
+          }
+        })
+        .catch(() => {
+          this.$message({
+            message: "已取消删除"
+          });
+        });
     }
   }
 };
 </script>
-
-<style>
-</style>

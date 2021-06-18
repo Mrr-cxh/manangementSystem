@@ -65,30 +65,26 @@ export default {
   components: {},
   methods: {
     login() {
-      // validate() 是表单进行预校验的方法
+      // validate() 是elementUI表单进行预校验的方法
       // valid 如果为真则校验通过，否则不通过
       this.$refs.loginRef.validate(valid => {
         if (!valid) return;
-        this.$axios
-          .post("/login", {
-            username: this.user.username,
-            password: this.user.password
-          })
-          .then(res => {
-            if (res.meta.status === 200) {
-              this.$message.success(res.meta.msg);
-              window.sessionStorage.setItem("token", res.data.token);
-              this.$router.push("/");
-            } else {
-              this.$message.error(res.meta.msg);
-            }
-          });
+        this.$axios.post("/login", this.user).then(res => {
+          if (res.meta.status === 200) {
+            this.$message.success(res.meta.msg);
+            window.sessionStorage.setItem("token", res.data.token);
+            this.$router.push("/");
+          } else {
+            this.$message.error(res.meta.msg);
+          }
+        });
       });
       // 保存 token 是因为除登陆之外的其他 API 接口，必须在登录之后才能访问
     },
     reset() {
       this.$refs.loginRef.resetFields();
       // resetFields() 是 elementUI 中表单自带的重置方法
+      // 对整个表单进行重置，将所有字段值重置为初始值并移除校验结果
     }
   }
 };

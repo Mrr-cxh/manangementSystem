@@ -12,15 +12,29 @@ const routes = [
     redirect: "/welcome",
     component: () => import("../views/Home.vue"),
     children: [
+      // 欢迎页面
       {
         path: "/welcome",
         name: "Welcome",
         component: () => import("../views/Welcome.vue"),
       },
+      // 用户列表页面
       {
         path: "/users",
         name: "Users",
         component: () => import("../views/children/Users.vue"),
+      },
+      // 权限列表页面
+      {
+        path: "/rights",
+        name: "Rights",
+        component: () => import("../views/children/Rights.vue"),
+      },
+      // 角色列表页面
+      {
+        path: "/roles",
+        name: "Roles",
+        component: () => import("../views/children/Roles.vue"),
       },
     ],
   },

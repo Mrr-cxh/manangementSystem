@@ -41,6 +41,7 @@
             <!-- 一级菜单的模板区域 -->
             <template slot="title">
               <!-- 图表 -->
+              <!-- 难点 -->
               <i :class="iconsObj[item.id]"></i>
               <!-- 文字 -->
               <span>{{ item.authName }}</span>
@@ -101,7 +102,6 @@ export default {
     } else {
       this.$message.error(res.meta.msg);
     }
-
     // 拿到activePath(菜单的高亮显示)
     this.activePath = window.sessionStorage.getItem("path");
   },
@@ -121,8 +121,7 @@ export default {
       window.sessionStorage.setItem("path", path);
       this.activePath = path;
     }
-  },
-  computed: {}
+  }
 };
 </script>
 
