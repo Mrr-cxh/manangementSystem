@@ -95,8 +95,8 @@ export default {
     };
   },
   async created() {
-    const res = await this.$axios.get("/menus");
     // 使用 async 和 await 可以拿到请求的数据
+    const res = await this.$axios.get("/menus");
     if (res.meta.status === 200) {
       this.menus = res.data;
     } else {

@@ -26,6 +26,9 @@ import {
   Dialog,
   MessageBox,
   Tag,
+  Tree,
+  Select,
+  Option,
 } from "element-ui";
 
 Vue.use(Button);
@@ -51,6 +54,9 @@ Vue.use(Tooltip);
 Vue.use(Pagination);
 Vue.use(Dialog);
 Vue.use(Tag);
+Vue.use(Tree);
+Vue.use(Select);
+Vue.use(Option);
 
 Vue.prototype.$notify = Notification; //这里不用use，直接挂载到Vue上就可以
 Vue.prototype.$message = Message; //这里不用use，直接挂载到Vue上就可以
